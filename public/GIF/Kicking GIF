@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Footy Kick Animation</title>
+<style>
+  body {
+    display: flex; justify-content: center; align-items: center; height: 100vh;
+    background: #e0f7fa;
+    font-family: Arial, sans-serif;
+  }
+  #kickButton {
+    position: relative;
+    width: 320px;
+    height: 80px;
+    background: #00539C;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /* Background with moving clouds */
+  #background {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('https://i.imgur.com/Nc9Y56Z.png') repeat-x; /* simple cloud icon */
+    background-size: 80px 40px;
+    animation: slideBackground 4s linear infinite;
+    z-index: 1;
+  }
+
+  @keyframes slideBackground {
+    0% { background-position-x: 0; }
+    100% { background-position-x: 320px; }
+  }
+
+  /* Footy styles */
+  #footy {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 60px;
+    height: 60px;
+    transform: translateY(-50%) rotate(0deg);
+    z-index: 10;
+  }
+
+  /* Animation for footy flying from left to center */
+  @keyframes flyAndSpin {
+    0% {
+      left: 0;
+      transform: translateY(-50%) rotate(0deg);
+    }
+    80% {
+      left: 130px;
+      transform: translateY(-50%) rotate(-1080deg); /* 3 spins backward */
+    }
+    100% {
+      left: 130px;
+      transform: translateY(-50%) rotate(-1080deg);
+    }
+  }
+
+  /* Slow spin when holding center */
+  @keyframes slowSpin {
+    0% { transform: translateY(-50%) rotate(-1080deg); }
+    100% { transform: translateY(-50%) rotate(-1440deg); } /* 1/2 spin per 2s */
+  }
+
+</style>
+</head>
+<body>
+
+<button id="kickButton">
+  <div id="background"></div>
+  <img id="footy" src="https://i.imgur.com/ZkYfAq3.gif" alt="Footy" />
+  <span id="buttonText" style="position:relative; z-index: 20;">Kick the footy!</span>
+</button>
+
+<script>
+  const button = document.getElementById('kickButton');
+  const footy = document.getElementById('footy');
+  const background = document.getElementById('background');
+  const buttonText = document.getElementById('buttonText');
+
+  function reset() {
+    footy.style.animation = 'none';
+    background.style.animationPlayState = 'running';
+    footy.style.left = '0px';
+    footy.style.transform = 'translateY(-50%) rotate(0deg)';
+    buttonText.style.display = 'inline';
+    button.disabled = false;
+  }
+
+  button.addEventListener('click', () => {
+    button.disabled = true;
+    buttonText.style.display = 'none';
+
+    // Animate footy flying and spinning (3 seconds)
+    footy.style.animation = 'flyAndSpin 3s forwards';
+    
+    // Background keeps sliding
+    background.style.animationPlayState = 'running';
+
+    // After footy flies to center, hold slow spin and stop background
+    setTimeout(() => {
+      footy.style.animation = 'slowSpin 2s linear infinite';
+      background.style.animationPlayState = 'paused';
+
+      // Simulate prediction delay (3 sec)
+      setTimeout(() => {
+        // Replace button content with prediction (example)
+        button.innerHTML = '<span style="color: white; font-weight: bold; font-size: 20px;">Prediction Loaded! 🏆</span>';
+      }, 3000);
+
+    }, 3000); // 3 seconds flying duration
+  });
+</script>
+
+</body>
+</html>
